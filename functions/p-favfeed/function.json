@@ -1,0 +1,10 @@
+{
+  "memory": 128,
+  "timeout": 3,
+  "environment": {
+    "HOST": "localhost"
+  },
+  "hooks":{
+    "build": "pip install -r requirements.txt -t ."
+  }
+}

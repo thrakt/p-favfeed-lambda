@@ -1,0 +1,8 @@
+functions/p-favfeed/*.dist-info
+functions/p-favfeed/bin
+functions/p-favfeed/certifi
+functions/p-favfeed/chardet
+functions/p-favfeed/idna
+functions/p-favfeed/requests
+functions/p-favfeed/urllib3
+.vscode
