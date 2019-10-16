@@ -2,7 +2,9 @@ import json
 import logging
 import os
 import re
-import datetime
+import hashlib
+
+from datetime import datetime
 
 import requests
 
@@ -78,7 +80,7 @@ def return_feed(json):
         link_url="https://" +
         os.environ["SERVICE_DOMAIN"] +
         "/bookmark_new_illust.php",
-        updated=datetime.datetime.strptime(
+        updated=datetime.strptime(
             first_item["reuploaded_time"] + "+0900", '%Y-%m-%d %H:%M:%S%z').isoformat(),
         host=os.environ["HOST"]
     )
@@ -102,7 +104,7 @@ def return_feed(json):
             str(e["id"]),
             caption=xmltext(e["caption"]) or "",
             img_src=e["image_urls"]["px_480mw"] or "",
-            updated=datetime.datetime.strptime(
+            updated=datetime.strptime(
                 e["reuploaded_time"] + "+0900", '%Y-%m-%d %H:%M:%S%z').isoformat(),
             name=xmltext(e["user"]["name"]) or "no name"
         )
@@ -147,6 +149,8 @@ def reflesh_access_token():
     dynamoDB = boto3.resource("dynamodb")
     table = dynamoDB.Table("PFavFeedInstants")
 
+    localtime = datetime.now().isoformat()
+
     json = requests.post(
         os.environ["ACCESS_TOKEN_URL"],
         {
@@ -155,6 +159,11 @@ def reflesh_access_token():
             "client_id": os.environ["CLIENT_ID"],
             "client_secret": os.environ["CLIENT_SECRET"],
             "grant_type": "password"
+        },
+        headers={
+            'User-Agent': os.environ['USER_AGENT'],
+            'X-Client-Time': localtime,
+            'X-Client-Hash': hashlib.md5((localtime + os.environ['HASH_SECRET']).encode('utf-8')).hexdigest(),
         },
         timeout=2
     ).json()
