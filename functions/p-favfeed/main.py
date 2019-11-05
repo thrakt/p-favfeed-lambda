@@ -149,7 +149,7 @@ def reflesh_access_token():
     dynamoDB = boto3.resource("dynamodb")
     table = dynamoDB.Table("PFavFeedInstants")
 
-    localtime = datetime.now().isoformat()
+    localtime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
 
     json = requests.post(
         os.environ["ACCESS_TOKEN_URL"],
