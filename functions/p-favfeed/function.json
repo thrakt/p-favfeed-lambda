@@ -1,6 +1,6 @@
 {
   "memory": 128,
-  "timeout": 3,
+  "timeout": 5,
   "environment": {
     "HOST": "localhost"
   },
