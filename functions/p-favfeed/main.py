@@ -21,19 +21,26 @@ def handle(event, context):
     """
     Lambda handler
     """
+    try:
 
-    json = get_json(get_access_token()) or get_json(reflesh_access_token())
+        json = get_json(get_access_token()) or get_json(reflesh_access_token())
 
-    if not json:
-        return "none"
+        if not json:
+            raise RuntimeError("cannot call api")
 
-    latest = json[0]["id"]
-    if not latest == get_latest():
-        logger.info("found new item")
-        update_latest(latest)
-        notify_push()
+        latest = json[0]["id"]
+        if not latest == get_latest():
+            logger.info("found new item")
+            update_latest(latest)
+            notify_push()
 
-    return return_feed(json)
+        return return_feed(json)
+    except Exception as e:
+        logger.error(e)
+        return {
+            "statusCode": 503,
+            "body": ""
+        }
 
 
 def get_json(accessToken):
